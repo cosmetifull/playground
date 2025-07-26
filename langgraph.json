@@ -3,5 +3,8 @@
   "graphs": {
     "agent": "./my_agent/agent.py:graph"
   },
-  "env": ".env"
+  "env": ".env",
+  "config": {
+    "model_name": "openai"
+  }
 }

@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
@@ -35,7 +36,14 @@ system_prompt = """Be a helpful assistant"""
 def call_model(state, config):
     messages = state["messages"]
     messages = [{"role": "system", "content": system_prompt}] + messages
-    model_name = config.get('configurable', {}).get("model_name", "openai")
+    
+    # Priority order: config > environment variable > default
+    model_name = (
+        (config.get('configurable') or {}).get("model_name")
+        or os.getenv("LANGGRAPH_MODEL_NAME")
+        or "openai"
+    )
+    
     model = _get_model(model_name)
     response = model.invoke(messages)
     # We return a list, because this will get added to the existing list
